@@ -1,0 +1,97 @@
+{
+  "name": "@akijoey/react-scripts",
+  "version": "0.0.1",
+  "description": "React scripts with custom configuration for webpack.",
+  "files": [
+    "bin/",
+    "scripts/",
+    "babel.config.js",
+    "postcss.config.js",
+    "webpack.config.js"
+  ],
+  "bin": {
+    "react-scripts": "./bin/scripts.js"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run lint",
+    "format": "prettier -w ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akijoey/react-scripts.git"
+  },
+  "keywords": [
+    "react"
+  ],
+  "author": "AkiJoey <akijoey@akijoey.com> (https://akijoey.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/akijoey/react-scripts/issues"
+  },
+  "homepage": "https://github.com/akijoey/react-scripts#readme",
+  "dependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/plugin-transform-react-constant-elements": "^7.12.1",
+    "@babel/plugin-transform-react-inline-elements": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-react": "^7.12.7",
+    "@babel/preset-typescript": "^7.12.7",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
+    "babel-loader": "^8.2.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "compression-webpack-plugin": "^7.0.0",
+    "copy-webpack-plugin": "^6.4.0",
+    "cross-spawn": "^7.0.3",
+    "css-loader": "^5.0.1",
+    "css-minimizer-webpack-plugin": "^1.1.5",
+    "fork-ts-checker-webpack-plugin": "^6.0.5",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "html-webpack-plugin": "^5.0.0",
+    "koa": "^2.13.0",
+    "mini-css-extract-plugin": "^1.3.2",
+    "node-sass": "^5.0.0",
+    "postcss-loader": "^4.1.0",
+    "postcss-normalize": "^9.0.0",
+    "postcss-preset-env": "^6.7.0",
+    "react-refresh": "^0.9.0",
+    "sass-loader": "^10.1.0",
+    "style-loader": "^2.0.0",
+    "typescript": "^4.1.2",
+    "webpack": "^5.10.0",
+    "webpack-dev-middleware": "^4.0.2",
+    "webpack-hot-middleware": "^2.25.0",
+    "webpackbar": "^5.0.0"
+  },
+  "devDependencies": {
+    "@akijoey/eslint-config": "latest",
+    "@akijoey/prettier-config": "latest",
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "eslint": "^7.14.0",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.5.2",
+    "prettier": "^2.2.0"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0"
+  },
+  "eslintConfig": {
+    "extends": "@akijoey"
+  },
+  "prettier": "@akijoey/prettier-config",
+  "commitlint": {
+    "extends": "@commitlint/config-conventional"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix",
+    "*.{js,json,yml,md}": "prettier -w"
+  }
+}
