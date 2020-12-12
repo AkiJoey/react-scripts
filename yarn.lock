@@ -3556,7 +3556,7 @@ html-minifier-terser@^5.0.1:
     relateurl "^0.2.7"
     terser "^4.6.3"
 
-html-webpack-plugin@^5.0.0:
+html-webpack-plugin@^5.0.0-alpha.15:
   version "5.0.0-alpha.15"
   resolved "https://registry.npm.taobao.org/html-webpack-plugin/download/html-webpack-plugin-5.0.0-alpha.15.tgz?cache=0&sync_timestamp=1607120600442&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fhtml-webpack-plugin%2Fdownload%2Fhtml-webpack-plugin-5.0.0-alpha.15.tgz#4562c3afa9d79e2ee0cf0c8e1a43ed47487d6115"
   integrity sha1-RWLDr6nXni7gzwyOGkPtR0h9YRU=
@@ -6987,7 +6987,7 @@ webpack@^5.10.0:
     watchpack "^2.0.0"
     webpack-sources "^2.1.1"
 
-webpackbar@^5.0.0:
+webpackbar@^5.0.0-3:
   version "5.0.0-3"
   resolved "https://registry.npm.taobao.org/webpackbar/download/webpackbar-5.0.0-3.tgz#f4f96c8fb13001b2bb1348252db4c980ab93aaac"
   integrity sha1-9Plsj7EwAbK7E0glLbTJgKuTqqw=
