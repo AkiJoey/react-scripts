@@ -1,10 +1,11 @@
 {
   "name": "@akijoey/react-scripts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React scripts with custom configuration for webpack.",
   "files": [
     "bin/",
     "scripts/",
+    "typings/",
     "babel.config.js",
     "postcss.config.js",
     "webpack.config.js"
