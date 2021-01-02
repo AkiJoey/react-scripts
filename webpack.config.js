@@ -26,26 +26,43 @@ const getBabelConfig = require('./babel.config')
 const getPostcssConfig = require('./postcss.config')
 
 // get style loaders
-const getStyleLoaders = importLoaders => {
+const getStyleLoaders = (importLoaders, modules) => {
   return [
     env === 'development' && 'style-loader',
     env === 'production' && MiniCssExtractPlugin.loader,
     {
       loader: 'css-loader',
       options: {
-        modules: false,
-        sourceMap: true,
-        importLoaders
+        importLoaders,
+        modules
       }
     },
     {
       loader: 'postcss-loader',
       options: {
-        postcssOptions: getPostcssConfig(),
-        sourceMap: true
+        postcssOptions: getPostcssConfig()
       }
     }
   ].filter(Boolean)
+}
+
+// get pre processor loaders
+const getPreProcessorLoaders = preProcessor => {
+  return [
+    {
+      loader: 'resolve-url-loader',
+      options: {
+        sourceMap: env === 'development',
+        root: resolve('src')
+      }
+    },
+    {
+      loader: preProcessor,
+      options: {
+        sourceMap: true
+      }
+    }
+  ]
 }
 
 // get asset loaders
@@ -56,7 +73,8 @@ const getAssetsLoaders = type => {
       options: {
         limit: type === 'images' ? 10240 : undefined,
         name: '[name].[contenthash].[ext]',
-        outputPath: type
+        outputPath: type,
+        esModule: false
       }
     }
   ]
@@ -110,20 +128,28 @@ const config = {
       },
       {
         test: /\.css$/,
-        use: getStyleLoaders(1)
+        use: getStyleLoaders(1, false)
       },
       {
-        test: /\.scss$/,
+        test: /\.module\.css$/,
+        use: getStyleLoaders(1, true)
+      },
+      {
+        test: /\.(scss|sass)$/,
         use: [
-          ...getStyleLoaders(2),
-          {
-            loader: 'sass-loader',
-            options: { sourceMap: true }
-          }
+          ...getStyleLoaders(3, false),
+          ...getPreProcessorLoaders('sass-loader')
         ]
       },
       {
-        test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+        test: /\.module\.(scss|sass)$/,
+        use: [
+          ...getStyleLoaders(3, true),
+          ...getPreProcessorLoaders('sass-loader')
+        ]
+      },
+      {
+        test: /\.(bmp|gif|jpe?g|png|avif|svg)$/,
         use: getAssetsLoaders('images')
       },
       {

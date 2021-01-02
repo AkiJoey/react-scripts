@@ -14,7 +14,19 @@ module.exports = api => {
         }
       ]
     ],
-    plugins: ['@babel/plugin-transform-runtime'],
+    plugins: [
+      '@babel/plugin-transform-runtime',
+      [
+        'babel-plugin-named-asset-import',
+        {
+          loaderMap: {
+            svg: {
+              ReactComponent: '@svgr/webpack?-svgo,+titleProp,+ref![path]'
+            }
+          }
+        }
+      ]
+    ],
     env: {
       development: {
         presets: [['@babel/preset-react', { development: true }]],
