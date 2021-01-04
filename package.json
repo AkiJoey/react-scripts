@@ -1,11 +1,11 @@
 {
   "name": "@akijoey/react-scripts",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "React scripts with custom configuration for webpack.",
   "files": [
     "bin/",
+    "types/",
     "scripts/",
-    "typings/",
     "babel.config.js",
     "postcss.config.js",
     "webpack.config.js"
@@ -13,7 +13,7 @@
   "bin": {
     "react-scripts": "bin/scripts.js"
   },
-  "types": "types.d.ts",
+  "types": "types/scripts.d.ts",
   "scripts": {
     "lint": "eslint .",
     "test": "npm run lint",
