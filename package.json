@@ -1,6 +1,6 @@
 {
   "name": "@akijoey/react-scripts",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "React scripts with custom configuration for webpack.",
   "files": [
     "bin/",
@@ -13,7 +13,7 @@
   "bin": {
     "react-scripts": "bin/scripts.js"
   },
-  "types": "typings/scripts.d.ts",
+  "types": "types.d.ts",
   "scripts": {
     "lint": "eslint .",
     "test": "npm run lint",
