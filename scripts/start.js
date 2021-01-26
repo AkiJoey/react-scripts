@@ -54,9 +54,9 @@ function start() {
   )
   const server = http.createServer(app.callback())
   // server listen
-  const host = '127.0.0.1'
-  const port = 3000
-  const url = chalk.magenta.underline(`http://${host}:${port}`)
+  const host = process.env.HOST || '127.0.0.1'
+  const port = Number(process.env.PORT || 3000)
+  const url = chalk.blueBright.underline(`http://${host}:${port}`)
   server.listen(port, host, () => {
     console.log(`DevServer is running at ${url}`)
   })
