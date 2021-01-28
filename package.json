@@ -1,6 +1,6 @@
 {
   "name": "@akijoey/react-scripts",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "React scripts with custom configuration for webpack.",
   "files": [
     "bin/",
