@@ -5,6 +5,15 @@ const path = require('path')
 
 const root = fs.realpathSync(process.cwd())
 const resolve = dir => path.join(root, dir)
+const exists = path => fs.existsSync(resolve(path))
+
+const extensions = ['.js', '.ts', '.tsx']
+const resolveModule = path => {
+  const extension = extensions.find(extension => {
+    return exists(path + extension)
+  })
+  return resolve(path + (extension || '.js'))
+}
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -24,6 +33,14 @@ const project = require(resolve('package.json'))
 
 const getBabelConfig = require('./babel.config')
 const getPostcssConfig = require('./postcss.config')
+
+// get filename
+const getFilename = type => {
+  if (exists('public')) {
+    return `${type}/[name].[contenthash].${type}`
+  }
+  return `index.${type}`
+}
 
 // get style loaders
 const getStyleLoaders = (importLoaders, modules) => {
@@ -102,15 +119,15 @@ const getHtmlWebpackPluginOptions = options => {
 const config = {
   mode: env,
   context: __dirname,
-  entry: [resolve('src/index.tsx')],
+  entry: [resolveModule('src/index')],
   output: {
     publicPath: '/',
     path: resolve('dist'),
-    filename: 'js/[name].[contenthash].js',
+    filename: getFilename('js'),
     hashSalt: project.name
   },
   resolve: {
-    extensions: ['.js', '.ts', '.tsx', '.json'],
+    extensions: [...extensions, '.json'],
     alias: {
       '@': resolve('src')
     }
@@ -159,30 +176,32 @@ const config = {
     ]
   },
   plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          globOptions: {
-            ignore: ['index.html']
-          },
-          context: resolve('public'),
-          from: '*',
-          to: resolve('dist'),
-          toType: 'dir'
-        }
-      ]
-    }),
     new WebpackBar({
       name: project.name,
       color: '#61dafb' // react blue
     }),
+    exists('public') &&
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            globOptions: {
+              ignore: ['**/index.ejs']
+            },
+            context: resolve('public'),
+            from: '*',
+            to: resolve('dist'),
+            toType: 'dir'
+          }
+        ]
+      }),
     new FriendlyErrorsWebpackPlugin(),
-    new ForkTsCheckerWebpackPlugin({
-      typescript: {
-        configFile: resolve('tsconfig.json')
-      }
-    })
-  ]
+    exists('tsconfig.json') &&
+      new ForkTsCheckerWebpackPlugin({
+        typescript: {
+          configFile: resolve('tsconfig.json')
+        }
+      })
+  ].filter(Boolean)
 }
 
 // development mode
@@ -203,34 +222,37 @@ if (env === 'development') {
 if (env === 'production') {
   const year = new Date().getFullYear()
   config.plugins.push(
-    new BannerPlugin({
-      banner: `/** @license ${project.license} (c) ${year} ${project.author} */`,
-      raw: true
-    }),
-    new CleanWebpackPlugin(),
-    new HtmlWebpackPlugin(
-      getHtmlWebpackPluginOptions({
-        minify: {
-          collapseWhitespace: true,
-          collapseBooleanAttributes: true,
-          collapseInlineTagWhitespace: true,
-          removeComments: true,
-          removeRedundantAttributes: true,
-          removeScriptTypeAttributes: true,
-          removeStyleLinkTypeAttributes: true,
-          minifyCSS: true,
-          minifyJS: true,
-          minifyURLs: true,
-          useShortDoctype: true
-        }
-      })
-    ),
-    new MiniCssExtractPlugin({
-      filename: 'css/[name].[contenthash].css',
-      chunkFilename: 'css/[id].[contenthash].css',
-      ignoreOrder: false
-    }),
-    new CompressionWebpackPlugin()
+    ...[
+      new BannerPlugin({
+        banner: `/** @license ${project.license} (c) ${year} ${project.author} */`,
+        raw: true
+      }),
+      new CleanWebpackPlugin(),
+      exists('public') &&
+        new HtmlWebpackPlugin(
+          getHtmlWebpackPluginOptions({
+            minify: {
+              collapseWhitespace: true,
+              collapseBooleanAttributes: true,
+              collapseInlineTagWhitespace: true,
+              removeComments: true,
+              removeRedundantAttributes: true,
+              removeScriptTypeAttributes: true,
+              removeStyleLinkTypeAttributes: true,
+              minifyCSS: true,
+              minifyJS: true,
+              minifyURLs: true,
+              useShortDoctype: true
+            }
+          })
+        ),
+      new MiniCssExtractPlugin({
+        filename: getFilename('css'),
+        chunkFilename: 'css/[id].[contenthash].css',
+        ignoreOrder: false
+      }),
+      exists('public') && new CompressionWebpackPlugin()
+    ].filter(Boolean)
   )
   config.optimization = {
     minimizer: [
