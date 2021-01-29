@@ -34,14 +34,6 @@ const project = require(resolve('package.json'))
 const getBabelConfig = require('./babel.config')
 const getPostcssConfig = require('./postcss.config')
 
-// get filename
-const getFilename = type => {
-  if (exists('public')) {
-    return `${type}/[name].[contenthash].${type}`
-  }
-  return `index.${type}`
-}
-
 // get style loaders
 const getStyleLoaders = (importLoaders, modules) => {
   return [
@@ -123,7 +115,7 @@ const config = {
   output: {
     publicPath: '/',
     path: resolve('dist'),
-    filename: getFilename('js'),
+    filename: 'js/[name].[contenthash].js',
     hashSalt: project.name
   },
   resolve: {
@@ -180,20 +172,19 @@ const config = {
       name: project.name,
       color: '#61dafb' // react blue
     }),
-    exists('public') &&
-      new CopyWebpackPlugin({
-        patterns: [
-          {
-            globOptions: {
-              ignore: ['**/index.ejs']
-            },
-            context: resolve('public'),
-            from: '*',
-            to: resolve('dist'),
-            toType: 'dir'
-          }
-        ]
-      }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          globOptions: {
+            ignore: ['**/index.ejs']
+          },
+          context: resolve('public'),
+          from: '*',
+          to: resolve('dist'),
+          toType: 'dir'
+        }
+      ]
+    }),
     new FriendlyErrorsWebpackPlugin(),
     exists('tsconfig.json') &&
       new ForkTsCheckerWebpackPlugin({
@@ -222,37 +213,34 @@ if (env === 'development') {
 if (env === 'production') {
   const year = new Date().getFullYear()
   config.plugins.push(
-    ...[
-      new BannerPlugin({
-        banner: `/** @license ${project.license} (c) ${year} ${project.author} */`,
-        raw: true
-      }),
-      new CleanWebpackPlugin(),
-      exists('public') &&
-        new HtmlWebpackPlugin(
-          getHtmlWebpackPluginOptions({
-            minify: {
-              collapseWhitespace: true,
-              collapseBooleanAttributes: true,
-              collapseInlineTagWhitespace: true,
-              removeComments: true,
-              removeRedundantAttributes: true,
-              removeScriptTypeAttributes: true,
-              removeStyleLinkTypeAttributes: true,
-              minifyCSS: true,
-              minifyJS: true,
-              minifyURLs: true,
-              useShortDoctype: true
-            }
-          })
-        ),
-      new MiniCssExtractPlugin({
-        filename: getFilename('css'),
-        chunkFilename: 'css/[id].[contenthash].css',
-        ignoreOrder: false
-      }),
-      exists('public') && new CompressionWebpackPlugin()
-    ].filter(Boolean)
+    new BannerPlugin({
+      banner: `/** @license ${project.license} (c) ${year} ${project.author} */`,
+      raw: true
+    }),
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin(
+      getHtmlWebpackPluginOptions({
+        minify: {
+          collapseWhitespace: true,
+          collapseBooleanAttributes: true,
+          collapseInlineTagWhitespace: true,
+          removeComments: true,
+          removeRedundantAttributes: true,
+          removeScriptTypeAttributes: true,
+          removeStyleLinkTypeAttributes: true,
+          minifyCSS: true,
+          minifyJS: true,
+          minifyURLs: true,
+          useShortDoctype: true
+        }
+      })
+    ),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].[contenthash].css',
+      chunkFilename: 'css/[id].[contenthash].css',
+      ignoreOrder: false
+    }),
+    new CompressionWebpackPlugin()
   )
   config.optimization = {
     minimizer: [
